@@ -5,8 +5,7 @@ window.addEventListener('DOMContentLoaded', () => {
   var player1 = "X";
   var AI = "O";
   var CanMove = true;
-
-
+  var player2 = "O";
   var cells = document.querySelectorAll('.cell');
   var restart = document.getElementById('restart');
 
