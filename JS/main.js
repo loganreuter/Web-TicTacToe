@@ -1,7 +1,7 @@
 let board = ["", "", "", "", "", "", "", "", ""];
 var GameOverSpan = document.getElementById('GameOver');
 window.addEventListener('DOMContentLoaded', () => {
-  
+
   var player1 = "X";
   var AI = "O";
   var playing = true;
@@ -9,29 +9,34 @@ window.addEventListener('DOMContentLoaded', () => {
 
   var cells = document.querySelectorAll('.cell');
   var restart = document.getElementById('restart');
- 
+
   //Handles click event
   cells.forEach((cell) => {
     cell.addEventListener('click', (event) => {
       target = event.currentTarget.id;
       var check = CheckIfOpen(board, target)
-      if(check){
+      if (check) {
         board[target] = player1;
         document.getElementById(target).innerText = player1;
         document.getElementById(target).style.color = "blue";
         var game_over = CheckForGameOver(board);
         //board.forEach((cell) => console.log(cell));
-        if(game_over || GetAllOpen(board).length == 0){
+        if (game_over || GetAllOpen(board).length == 0) {
           GameOver("The Player Wins!")
-        } else{
-          var aiMove = AIMove(board);
-          board[aiMove] = AI;
-          document.getElementById(aiMove).innerText = AI;
-          document.getElementById(aiMove).style.color = "red";
-          game_over = CheckForGameOver(board);
-          if(game_over || GetAllOpen(board).length == 0){
-            GameOver("The Computer Wins!");
-          }
+        } else {
+          console.log("Thinking.....");
+          setTimeout(function () {
+            console.log("I've Got It!");
+            var aiMove = AIMove(board);
+            board[aiMove] = AI;
+            document.getElementById(aiMove).innerText = AI;
+            document.getElementById(aiMove).style.color = "red";
+            game_over = CheckForGameOver(board);
+            if (game_over || GetAllOpen(board).length == 0) {
+              GameOver("The Computer Wins!");
+            }
+          }, 3000);
+
         }
       }
     })
@@ -50,73 +55,73 @@ window.addEventListener('DOMContentLoaded', () => {
 
 })
 
-function GameOver(text){
-  
-  if(GetAllOpen(board).length == 0){
+function GameOver(text) {
+
+  if (GetAllOpen(board).length == 0) {
     GameOverSpan.innerText = "It is a tie";
-  } else{
+  } else {
     GameOverSpan.innerText = text;
   }
 }
 
-function CheckForGameOver(board){
+function CheckForGameOver(board) {
   //checks rows
-  for(var i = 0; i < 9; i+=3){
-    if(board[i] != ""){
-      if(board[i] == board[i+1] && board[i] == board[i+2]){
+  for (var i = 0; i < 9; i += 3) {
+    if (board[i] != "") {
+      if (board[i] == board[i + 1] && board[i] == board[i + 2]) {
         return true;
       }
     }
   }
   //Checks columns
-  for(var i = 0; i < 3; i++){
-    if(board[i] != ""){
-      if(board[i] == board[i+3] && board[i] == board[i+6]){
+  for (var i = 0; i < 3; i++) {
+    if (board[i] != "") {
+      if (board[i] == board[i + 3] && board[i] == board[i + 6]) {
         return true;
       }
     }
   }
   //Checks Horizontals
-  if(board[0] != ""){
-    if(board[0] == board[4] && board[0] == board[8]){
+  if (board[0] != "") {
+    if (board[0] == board[4] && board[0] == board[8]) {
       return true;
     }
   }
-  if(board[2] != ""){
-    if(board[2] == board[4] && board[2] == board[6]){
+  if (board[2] != "") {
+    if (board[2] == board[4] && board[2] == board[6]) {
       return true;
     }
   }
   return false;
 }
 
-function CheckIfOpen(board, index){
-  return (board[index] == "") ?  true: false;
+function CheckIfOpen(board, index) {
+  return (board[index] == "") ? true : false;
 }
 
-function GetAllOpen(board){
+function GetAllOpen(board) {
   var AllOpen = [];
 
-  for(var i = 0; i < board.length; i++){
-    if(board[i] == ""){
+  for (var i = 0; i < board.length; i++) {
+    if (board[i] == "") {
       AllOpen.push(i);
     }
   }
   return AllOpen;
 }
 
-function AIMove(board){
+function AIMove(board) {
   let bestVal = -1000;
   let bestMove = -1;
   //console.log(board.length);
 
-  for(var i = 0; i < board.length; i++){
-    if(board[i] == ""){
+  for (var i = 0; i < board.length; i++) {
+    if (board[i] == "") {
       board[i] = "O";
       var moveVal = minimax(board, 0, false);
       board[i] = "";
       //var moveVal = 1;
-      if(moveVal > bestVal){
+      if (moveVal > bestVal) {
         //console.log(bestMove);
         bestMove = i;
         //console.log(bestMove);
@@ -128,37 +133,39 @@ function AIMove(board){
   return bestMove
 }
 
-function minimax(board, depth, isMax){
+function minimax(board, depth, isMax) {
   var PossibleMoves = GetAllOpen(board); //Gets the indexes for all of the open board spaces
   var GameOver = CheckForGameOver(board); //Boolean is the game over
 
   // console.log(board);
-  if(GameOver && !isMax){ //game over and the ai won
+  if (GameOver && !isMax) { //game over and the ai won
     return 10;
-  } if(GameOver && isMax){ //game over and the ai lost
+  }
+  if (GameOver && isMax) { //game over and the ai lost
     return -10;
-  } if (PossibleMoves.length == 0){ //Tie, no more moves
-   return 0;
+  }
+  if (PossibleMoves.length == 0) { //Tie, no more moves
+    return 0;
   }
 
-  if(isMax){
+  if (isMax) {
     var best = -1000;
-    for(var i = 0; i < board.length; i++){
-      if(board[i] == ""){
+    for (var i = 0; i < board.length; i++) {
+      if (board[i] == "") {
         board[i] = "O";
 
-        best = Math.max(best, minimax(board,depth+1, !isMax));
+        best = Math.max(best, minimax(board, depth + 1, !isMax));
 
         board[i] = "";
       }
     }
     return best;
-  } else{
+  } else {
     let best = 1000;
-    for(var i = 0; i < board.length; i++){
-      if(board[i] == ""){
+    for (var i = 0; i < board.length; i++) {
+      if (board[i] == "") {
         board[i] = "X";
-        best = Math.min(best, minimax(board, depth+1, !isMax));
+        best = Math.min(best, minimax(board, depth + 1, !isMax));
         board[i] = "";
       }
     }
