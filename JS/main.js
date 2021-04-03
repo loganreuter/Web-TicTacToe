@@ -4,7 +4,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   var player1 = "X";
   var AI = "O";
-  var playing = true;
+  var CanMove = true;
 
 
   var cells = document.querySelectorAll('.cell');
@@ -15,7 +15,8 @@ window.addEventListener('DOMContentLoaded', () => {
     cell.addEventListener('click', (event) => {
       target = event.currentTarget.id;
       var check = CheckIfOpen(board, target)
-      if (check) {
+      if (check && CanMove) {
+        CanMove = !CanMove;
         board[target] = player1;
         document.getElementById(target).innerText = player1;
         document.getElementById(target).style.color = "blue";
@@ -32,6 +33,7 @@ window.addEventListener('DOMContentLoaded', () => {
             document.getElementById(aiMove).innerText = AI;
             document.getElementById(aiMove).style.color = "red";
             game_over = CheckForGameOver(board);
+            CanMove = !CanMove;
             if (game_over || GetAllOpen(board).length == 0) {
               GameOver("The Computer Wins!");
             }
@@ -49,6 +51,7 @@ window.addEventListener('DOMContentLoaded', () => {
       cell.innerText = '';
     })
     GameOverSpan.innerText = '';
+    CanMove = true;
   })
 
 
