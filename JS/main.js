@@ -1,5 +1,6 @@
 let board = ["", "", "", "", "", "", "", "", ""];
 var GameOverSpan = document.getElementById('GameOver');
+let thinking = document.getElementById("thinking");
 window.addEventListener('DOMContentLoaded', () => {
 
   var player1 = "X";
@@ -18,19 +19,22 @@ window.addEventListener('DOMContentLoaded', () => {
         CanMove = !CanMove;
         board[target] = player1;
         document.getElementById(target).innerText = player1;
-        document.getElementById(target).style.color = "blue";
+        document.getElementById(target).style.color = "#6969B3";
         var game_over = CheckForGameOver(board);
         //board.forEach((cell) => console.log(cell));
         if (game_over || GetAllOpen(board).length == 0) {
           GameOver("The Player Wins!")
         } else {
           console.log("Thinking.....");
+          thinking.classList.add("show")
+          // randomThinking()
           setTimeout(function () {
+            thinking.classList.remove("show")
             console.log("I've Got It!");
             var aiMove = AIMove(board);
             board[aiMove] = AI;
             document.getElementById(aiMove).innerText = AI;
-            document.getElementById(aiMove).style.color = "red";
+            document.getElementById(aiMove).style.color = "#4B244A";
             game_over = CheckForGameOver(board);
             CanMove = !CanMove;
             if (game_over || GetAllOpen(board).length == 0) {
@@ -50,15 +54,23 @@ window.addEventListener('DOMContentLoaded', () => {
       cell.innerText = '';
     })
     GameOverSpan.innerText = '';
+    GameOverSpan.classList.remove("show")
     CanMove = true;
   })
-
-
-
 })
 
-function GameOver(text) {
+// function randomThinking(){
+//   while (thinking) {
+//     setInterval(() => {
+//       let index = Math.floor(Math.random() * 9);
+//       console.log(index);
+//     }, 500)
+//   }
+// }
 
+
+function GameOver(text) {
+  GameOverSpan.classList.add("show")
   if (GetAllOpen(board).length == 0) {
     GameOverSpan.innerText = "It is a tie";
   } else {
